@@ -163,7 +163,7 @@ module.exports = {
       e.preventDefault();
       return true;
     },
-    setSide: function() {
+    setCorner: function() {
       this.style.cursor = this.corner + "-resize";
       if (this.corner[0] === "n") {
         this.direction.y = -1;
@@ -229,7 +229,7 @@ module.exports = {
     }
   },
   compiled: function() {
-    this.setSide();
+    this.setCorner();
     this.setSize();
     if (this.keepRatio) {
       this.setRatio();
@@ -245,7 +245,6 @@ module.exports = {
     return typeof this.removeKeyupListener === "function" ? this.removeKeyupListener() : void 0;
   },
   watch: {
-    "defaultSize": "resetSize",
     "minSize.width": function(val) {
       if (this.parentSize.width < val.width) {
         return this.parentSize.width = val.width;
@@ -266,10 +265,15 @@ module.exports = {
         return this.parentSize.height = val.height;
       }
     },
-    "side": "setSide",
-    "size": "setSize"
+    "corner": "setCorner",
+    "size": "setSize",
+    "keepRatio": function(val) {
+      if (this.val) {
+        return this.setRatio();
+      }
+    }
   }
 };
 
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "<div v-bind:style=style @mousedown=\"dragStart | notPrevented | prevent\" @dblclick=\"resetSize | notPrevented | prevent\" v-bind:class=\"'resize-handle-'+side\" class=resize-handle></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "<div v-bind:style=style @mousedown=\"dragStart | notPrevented | prevent\" @dblclick=\"resetSize | notPrevented | prevent\" v-bind:class=\"'resize-handle-'+corner\" class=resize-handle></div>"

@@ -2,7 +2,7 @@ env = null
 resizers =[]
 divs = []
 side = ["right","left","top","bottom"]
-describe "clusterize", ->
+describe "resize-handle", ->
 
 
   describe "basic env", ->

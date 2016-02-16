@@ -4,7 +4,7 @@
   v-bind:style="style"
   @mousedown="dragStart | notPrevented | prevent"
   @dblclick="resetSize | notPrevented | prevent"
-  v-bind:class="'resize-handle-'+side"
+  v-bind:class="'resize-handle-'+corner"
   )
 </template>
 
@@ -138,7 +138,7 @@ module.exports =
       e.preventDefault()
       true
 
-    setSide: ->
+    setCorner: ->
       @style.cursor = "#{@corner}-resize"
       if @corner[0] == "n"
         @direction.y = -1
@@ -196,7 +196,7 @@ module.exports =
         @ratioSet = false
 
   compiled: ->
-    @setSide()
+    @setCorner()
     @setSize()
     @setRatio() if @keepRatio
     @resetSize()
@@ -208,7 +208,6 @@ module.exports =
     @removeKeyupListener?()
 
   watch:
-    "defaultSize": "resetSize"
     "minSize.width": (val) ->
       if @parentSize.width < val.width
         @parentSize.width = val.width
@@ -221,6 +220,8 @@ module.exports =
     "maxSize.height": (val) ->
       if @parentSize.height > val.height
         @parentSize.height = val.height
-    "side": "setSide"
+    "corner": "setCorner"
     "size": "setSize"
+    "keepRatio": (val) ->
+      @setRatio() if @val
 </script>
