@@ -1,7 +1,7 @@
 {
   "name": "vue-resize-handle",
   "description": "handle to resize an element - done in vue",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/paulpflug",
   "author": {
     "name": "Paul Pflugradt",
