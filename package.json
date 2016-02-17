@@ -16,8 +16,7 @@
   "engines": {
     "node": "*"
   },
-  "dependencies": {},
-  "peerDependencies": {
+  "dependencies": {
     "vue-filters": "^0.1.4",
     "vue-mixins": "^0.2.0"
   },
