@@ -8,20 +8,13 @@ To resize any element uni- or bidirectional.
 
 ### [See it in action](https://paulpflug.github.io/vue-resize-handle)
 
-# Disclaimer
-
-Only for [**webpack**](https://webpack.github.io/) workflows.
-
-**No jQuery dependency**
 
 # Install
 
 ```sh
 npm install --save-dev vue-resize-handle
-# dependencies
-npm install --save-dev vue-filters vue-mixins
 ```
-
+or include `build/bundle.js`
 
 ## Usage
 ```coffee
@@ -30,6 +23,13 @@ components:
   "resizer": require "vue-resize-handle/unidirectional"
   # or:
   "resizer": require "vue-resize-handle/bidirectional"
+
+# when using the bundle
+components:
+  "resizer": window.vueComps.resizeHandle.uni
+  # or:
+  "resizer": window.vueComps.resizeHandle.bi
+
 data: ->
   width: 200
   # or:
@@ -79,8 +79,6 @@ npm install
 npm run test
 ```
 Browse to `http://localhost:8080/`
-
-Best development experience in [atom](https://atom.io/) with [vue-autocompile](https://atom.io/packages/vue-autocompile).
 
 ## License
 Copyright (c) 2016 Paul Pflugradt
