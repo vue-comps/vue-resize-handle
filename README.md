@@ -1,10 +1,6 @@
 # vue-resize-handle
 
-## Why
-To resize any element uni- or bidirectional.
-
-## What
-`vue-resize-handle` are two small vue components to manage the resizing of another element.
+When you want to able to resize an element uni- or bidirectional, you need a resize-handle.
 
 ### [See it in action](https://vue-comps.github.io/vue-resize-handle)
 
