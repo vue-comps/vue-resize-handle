@@ -6,7 +6,7 @@ To resize any element uni- or bidirectional.
 ## What
 `vue-resize-handle` are two small vue components to manage the resizing of another element.
 
-### [See it in action](https://paulpflug.github.io/vue-resize-handle)
+### [See it in action](https://vue-comps.github.io/vue-resize-handle)
 
 
 # Install
@@ -76,7 +76,7 @@ see `dev/` folder for more examples
 Clone repository
 ```sh
 npm install
-npm run test
+npm run dev
 ```
 Browse to `http://localhost:8080/`
 
