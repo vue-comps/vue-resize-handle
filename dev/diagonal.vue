@@ -1,7 +1,7 @@
 <template lang="jade">
 .container
   p works with CTRL key to keep aspect ratio
-  a(href="https://github.com/paulpflug/vue-clusterize/blob/master/dev/basic.vue") source
+  a(href="https://github.com/vue-comps/vue-resize-handle/blob/master/dev/diagonal.vue") source
   .seDiv(v-bind:style="{width:style1.width+'px',height:style1.height+'px'}" v-el:div1)
     span(v-el:default1) drag me on the south east corner
     resizer(v-bind:parent-size.sync="style1" v-ref:resize1 corner="se"

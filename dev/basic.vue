@@ -1,6 +1,6 @@
 <template lang="jade">
 .container
-  a(href="https://github.com/paulpflug/vue-clusterize/blob/master/dev/basic.vue") source
+  a(href="https://github.com/vue-comps/vue-resize-handle/blob/master/dev/basic.vue") source
   .rightHandleDiv(v-bind:style="{height:style1.height+'px', width:style1.width+'px'}" v-el:div1)
     span(v-el:content1) drag me on the right
     resizer(v-bind:parent-size.sync="style1.width" v-ref:resize1
