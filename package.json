@@ -2,16 +2,15 @@
   "name": "vue-resize-handle",
   "description": "handle to resize an element - done in vue",
   "version": "0.1.1",
-  "homepage": "https://github.com/paulpflug",
+  "homepage": "https://github.com/vue-comps",
   "author": {
     "name": "Paul Pflugradt",
     "email": "paul.pflugradt@gmail.com"
   },
   "license": "MIT",
-  "main": "resize-handle.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/paulpflug/vue-resize-handle"
+    "url": "git://github.com/vue-comps/vue-resize-handle"
   },
   "engines": {
     "node": "*"
