@@ -2,7 +2,7 @@
 
 When you want to able to resize an element uni- or bidirectional, you need a resize-handle.
 
-### [See it in action](https://vue-comps.github.io/vue-resize-handle)
+### [Demo](https://vue-comps.github.io/vue-resize-handle)
 
 
 # Install
@@ -10,7 +10,7 @@ When you want to able to resize an element uni- or bidirectional, you need a res
 ```sh
 npm install --save-dev vue-resize-handle
 ```
-or include `build/bundle.js`
+or include `build/bundle.js`.
 
 ## Usage
 ```coffee
@@ -33,15 +33,16 @@ data: ->
     width: 200
     height: 200
 ```
-```jade
-# in the template
-.elementToResize(v-bind:style="{width:width+'px'}")
-  resizer(v-bind:parent-size.sync="width")
+```html
+<div :style="{width:width+'px'}">
+  <resizer :parent-size.sync="width"></resizer>
+</div>
 # or
-.elementToResize(v-bind:style="style")
-  resizer(v-bind:parent-size.sync="style")
+<div :style="style">
+  <resizer :parent-size.sync="style"></resizer>
+</div>
 ```
-see `dev/` folder for more examples
+For examples see [`dev/`](https://github.com/vue-comps/vue-resize-handle/tree/master/dev).
 
 #### Props
 ##### Both
@@ -69,12 +70,12 @@ see `dev/` folder for more examples
 
 
 # Development
-Clone repository
+Clone repository.
 ```sh
 npm install
 npm run dev
 ```
-Browse to `http://localhost:8080/`
+Browse to `http://localhost:8080/`.
 
 ## License
 Copyright (c) 2016 Paul Pflugradt
