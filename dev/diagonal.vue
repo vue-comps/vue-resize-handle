@@ -1,25 +1,25 @@
-<template lang="jade">
+<template lang="pug">
 .container
   p works with CTRL key to keep aspect ratio
   a(href="https://github.com/vue-comps/vue-resize-handle/blob/master/dev/diagonal.vue") source
   .seDiv(v-bind:style="{width:style1.width+'px',height:style1.height+'px'}" v-el:div1)
     span(v-el:default1) drag me on the south east corner
-    resizer(v-bind:parent-size.sync="style1" v-ref:resize1 corner="se"
+    resizer(v-bind:size.sync="style1" v-ref:resize1 corner="se"
     v-bind:max-size="{width:200,height:200}" v-bind:min-size="{width:70,height:70}"
     v-bind:default-size="defaultSize1")
   .swDiv(v-bind:style="{height:style2.height+'px', width:style2.width+'px'}"  v-el:div2)
     span(v-el:default2) drag me on the south west corner
-    resizer(v-bind:parent-size.sync="style2" v-ref:resize2 corner="sw"
+    resizer(v-bind:size.sync="style2" v-ref:resize2 corner="sw"
     v-bind:max-size="{width:200,height:200}" v-bind:min-size="{width:70,height:70}"
     v-bind:default-size="defaultSize2")
   .nwDiv(v-bind:style="{height:style3.height+'px', width:style3.width+'px'}"  v-el:div3)
     span(v-el:default3) drag me on the north west corner
-    resizer(v-bind:parent-size.sync="style3" v-ref:resize3 corner="nw"
+    resizer(v-bind:size.sync="style3" v-ref:resize3 corner="nw"
     v-bind:max-size="{width:200,height:200}" v-bind:min-size="{width:70,height:70}"
     v-bind:default-size="defaultSize3")
   .neDiv(v-bind:style="{height:style4.height+'px', width:style4.width+'px'}"  v-el:div4)
     span(v-el:default4) drag me on the north east corner
-    resizer(v-bind:parent-size.sync="style4" v-ref:resize4 corner="ne"
+    resizer(v-bind:size.sync="style4" v-ref:resize4 corner="ne"
     v-bind:max-size="{width:200,height:200}" v-bind:min-size="{width:70,height:70}"
     v-bind:default-size="defaultSize4")
 </template>

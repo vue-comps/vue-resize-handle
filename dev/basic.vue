@@ -1,21 +1,21 @@
-<template lang="jade">
+<template lang="pug">
 .container
   a(href="https://github.com/vue-comps/vue-resize-handle/blob/master/dev/basic.vue") source
   .rightHandleDiv(v-bind:style="{height:style1.height+'px', width:style1.width+'px'}" v-el:div1)
     span(v-el:content1) drag me on the right
-    resizer(v-bind:parent-size.sync="style1.width" v-ref:resize1
+    resizer(v-bind:size.sync="style1.width" v-ref:resize1
     v-bind:max-size="200" v-bind:min-size="80" v-bind:content-size="contentWidth1")
   .leftHandleDiv(v-bind:style="{height:style2.height+'px', width:style2.width+'px'}"  v-el:div2)
     span(v-el:content2) drag me on the left
-    resizer(v-bind:parent-size.sync="style2.width" side="left" v-ref:resize2
+    resizer(v-bind:size.sync="style2.width" side="left" v-ref:resize2
     v-bind:max-size="200" v-bind:min-size="80" v-bind:content-size="contentWidth2")
   .topHandleDiv(v-bind:style="{height:style3.height+'px', width:style3.width+'px'}"  v-el:div3)
     span(v-el:content3) drag me on the top
-    resizer(v-bind:parent-size.sync="style3.height" side="top" v-ref:resize3
+    resizer(v-bind:size.sync="style3.height" side="top" v-ref:resize3
     v-bind:max-size="200" v-bind:min-size="50" v-bind:content-size="contentHeight3")
   .bottomHandleDiv(v-bind:style="{height:style4.height+'px', width:style4.width+'px'}"  v-el:div4)
     span(v-el:content4) drag me on the bottom
-    resizer(v-bind:parent-size.sync="style4.height" side="bottom" v-ref:resize4
+    resizer(v-bind:size.sync="style4.height" side="bottom" v-ref:resize4
     v-bind:max-size="200" v-bind:min-size="50" v-bind:content-size="contentHeight4")
 </template>
 

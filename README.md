@@ -35,11 +35,11 @@ data: ->
 ```
 ```html
 <div :style="{width:width+'px'}">
-  <resizer :parent-size.sync="width"></resizer>
+  <resizer :size.sync="width"></resizer>
 </div>
 # or
 <div :style="style">
-  <resizer :parent-size.sync="style"></resizer>
+  <resizer :size.sync="style"></resizer>
 </div>
 ```
 For examples see [`dev/`](https://github.com/vue-comps/vue-resize-handle/tree/master/dev).
@@ -49,7 +49,7 @@ For examples see [`dev/`](https://github.com/vue-comps/vue-resize-handle/tree/ma
 | Name | type | default | description |
 | ---:| --- | ---| --- |
 | offset | Number | 0 | how far the handle overlaps the parent |
-| size | Number | 10 | size of the handle in px |
+| extent | Number | 10 | extent of the handle in px |
 ##### Unidirectional
 | Name | type | default | description |
 | ---:| --- | ---| --- |
@@ -57,7 +57,7 @@ For examples see [`dev/`](https://github.com/vue-comps/vue-resize-handle/tree/ma
 | defaultSize | Number | -1 | default size of the parent (will be set if dblclick on handle) |
 | maxSize | Number | Number.MAX_VALUE | maximal size of the parent |
 | side | String | "right" | one of "top","right","bottom","left" |
-| parentSize | Number | - | will be updated on resize |
+| size | Number | - | (two-way) will be updated on resize |
 ##### Bidirectional
 | Name | type | default | description |
 | ---:| --- | ---| --- |
@@ -66,8 +66,15 @@ For examples see [`dev/`](https://github.com/vue-comps/vue-resize-handle/tree/ma
 | maxSize | Object | {height:Number.MAX_VALUE, width:Number.MAX_VALUE} | maximal size of the parent |
 | keepRatio | Boolean | false | enforce aspect ratio |
 | corner | String | "se" | one of "se","sw","ne","nw" (cardinal points) |
-| parentSize | Object | {height:0, width:0} | will be updated on resize |
+| size | Object | {height:0, width:0} | (two-way) will be updated on resize |
 
+#### Events
+| Name | Arguments | description |
+| ---:| --- |  --- |
+| resize-start | this.size, this | emitted when resize starts |
+| resize | this.size, oldSize, this | emitted on resize and on reset |
+| resize-end | this.size, this | emitted when resize ends |
+| reset-size | - | emitted on reset after `resize` |
 
 # Development
 Clone repository.

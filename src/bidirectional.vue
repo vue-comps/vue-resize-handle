@@ -1,18 +1,16 @@
 // out: ..
-<template lang="jade">
+<template lang="pug">
 .resize-handle(
   v-bind:style="style"
-  @mousedown="dragStart | notPrevented | prevent"
-  @dblclick="resetSize | notPrevented | prevent"
+  style="position: absolute"
+  @mousedown="dragStart"
+  @dblclick="resetSize"
   v-bind:class="'resize-handle-'+corner"
   )
 </template>
 
 <script lang="coffee">
 module.exports =
-  filters:
-    "notPrevented": require("vue-filters/notPrevented")
-    "prevent": require("vue-filters/prevent")
 
   mixins:[
     require("vue-mixins/onDocument")
@@ -24,96 +22,91 @@ module.exports =
     "offset":
       type: Number
       default: 0
-    "size":
+    "extent":
       type: Number
       default: 10
     "minSize":
       type: Object
-      default: {height:0, width:0}
+      default: -> {height:0, width:0}
     "defaultSize":
       type: Object
-      default: {height:-1, width:-1}
+      default: -> {height:-1, width:-1}
     "maxSize":
       type: Object
-      default: {height:Number.MAX_VALUE, width:Number.MAX_VALUE}
+      default: -> {height:Number.MAX_VALUE, width:Number.MAX_VALUE}
     "keepRatio":
       type: Boolean
       default: false
     "corner":
       type: String
       default: "se"
-    "parentSize":
+    "size":
       type: Object
-      required: {height:0, width:0}
+      required: true
 
+  computed:
+    direction: ->
+      return {
+        x: if @corner[1] == "e" then 1 else -1
+        y: if @corner[0] == "n" then -1 else 1
+      }
 
-  data: ->
-    oldCursor: null
-    ratio: null
-    ratioSet: false
-    removeMoveListener: null
-    removeEndListener: null
-    removeKeydownListener: null
-    removeKeyupListener: null
-    dragging: false
-    firstLimit: null
-
-    startPos:
-      x: 0
-      y: 0
-
-    startSize:
-      width: 0
-      height: 0
-
-    direction:
-      x: 1
-      y: 1
-
-    style:
-      position: "absolute"
-      width:null
-      height:null
-      top:null
-      left:null
-      right:null
-      bottom:null
-      cursor: "auto"
-
+    style: ->
+      style =
+        cursor: "#{@corner}-resize"
+        width: @extent+"px"
+        height: @extent+"px"
+      horz = if @direction.x == 1 then "right" else "left"
+      vert = if @direction.y == 1 then "bottom" else "top"
+      style[vert] = -@offset+"px"
+      style[horz] = -@offset+"px"
+      return style
 
   methods:
-
     resetSize: (e) ->
-      if @defaultSize? and (@defaultSize.height > -1 or @defaultSize.width > -1)
-        newSize = {}
-        if @defaultSize.height > -1
-          newSize.height = @defaultSize.height
-        else
-          newSize.height = @parentSize.height
-        if @defaultSize.width > -1
-          newSize.width = @defaultSize.width
-        else
-          newSize.width = @parentSize.width
-        newSize = @processMinMax(newSize)
-        newSize = @processRatio(newSize) if @keepRatio
-        @parentSize = newSize
+      unless e.defaultPrevented
+        e.preventDefault()
+        if @defaultSize? and (@defaultSize.height > -1 or @defaultSize.width > -1)
+          newSize = {}
+          if @defaultSize.height > -1
+            newSize.height = @defaultSize.height
+          else
+            newSize.height = @size.height
+          if @defaultSize.width > -1
+            newSize.width = @defaultSize.width
+          else
+            newSize.width = @size.width
+          newSize = @processMinMax(newSize)
+          newSize = @processRatio(newSize) if @keepRatio
+          oldSize =
+            height: @size.height
+            width: @size.width
+          @size.height = newSize.height
+          @size.width = newSize.width
+          @$emit "resize", @size, oldSize, @
+          @$emit "reset-size"
 
     dragStart: (e) ->
-      if e.ctrlKey and not @keepRatio
-        @setRatio()
-      @startSize.width = @parentSize.width
-      @startSize.height = @parentSize.height
-      @dragging = true
-      @startPos = x: e.clientX, y: e.clientY
-      if document.body.style.cursor?
-        @oldCursor = document.body.style.cursor
-      else
-        @oldCursor = null
-      document.body.style.cursor = @style.cursor
-      @removeMoveListener = @onDocument("mousemove",@drag)
-      @removeEndListener = @onceDocument("mouseup",@dragEnd)
+      unless e.defaultPrevented
+        e.preventDefault()
+        if e.ctrlKey and not @keepRatio
+          @setRatio()
+        @startSize =
+          width: @size.width
+          height: @size.height
+        @dragging = true
+        @startPos = x: e.clientX, y: e.clientY
+        if document.body.style.cursor?
+          @oldCursor = document.body.style.cursor
+        else
+          @oldCursor = null
+        document.body.style.cursor = @style.cursor
+        @removeMoveListener = @onDocument("mousemove",@drag)
+        @removeEndListener = @onceDocument("mouseup",@dragEnd)
+        @$emit "resize-start", @size, @
 
     drag: (e) ->
+      e.preventDefault()
       diff =
         x: (e.clientX - @startPos.x)*@direction.x
         y: (e.clientY - @startPos.y)*@direction.y
@@ -127,42 +120,25 @@ module.exports =
           newSize.height = newSize.width / @ratio
       newSize = @processMinMax(newSize)
       newSize = @processRatio(newSize) if (e.ctrlKey or @keepRatio)
-      @parentSize = newSize
-      e.preventDefault()
+      oldSize =
+        height: @size.height
+        width: @size.width
+      @size.height = newSize.height
+      @size.width = newSize.width
+      @$emit "resize", @size, oldSize, @
+
 
     dragEnd: (e) ->
+      e.preventDefault()
       document.body.style.cursor = @oldCursor
       @dragging = false
       @removeMoveListener?()
       @removeEndListener?()
-      e.preventDefault()
+      @$emit "resize-end", @size, @
       true
 
-    setCorner: ->
-      @style.cursor = "#{@corner}-resize"
-      if @corner[0] == "n"
-        @direction.y = -1
-        @style.top = -@offset+"px"
-        @style.bottom = null
-      else
-        @direction.y = 1
-        @style.top = null
-        @style.bottom = -@offset+"px"
-      if @corner[1] == "e"
-        @direction.x = 1
-        @style.left = null
-        @style.right = -@offset+"px"
-      else
-        @direction.x = -1
-        @style.left = -@offset+"px"
-        @style.right = null
-
-    setSize: ->
-      @style.width = @size+"px"
-      @style.height = @size+"px"
-
     setRatio: ->
-      @ratio = @parentSize.width / @parentSize.height
+      @ratio = @size.width / @size.height
 
     processMinMax: (size) ->
       if size.width < @minSize.width
@@ -195,11 +171,8 @@ module.exports =
       if e.keyCode == 17
         @ratioSet = false
 
-  compiled: ->
-    @setCorner()
-    @setSize()
+  ready: ->
     @setRatio() if @keepRatio
-    @resetSize()
     @removeKeydownListener = @onDocument("keydown",@saveRatio)
     @removeKeyupListener = @onDocument("keyup",@releaseSaveRatio)
 
@@ -209,19 +182,17 @@ module.exports =
 
   watch:
     "minSize.width": (val) ->
-      if @parentSize.width < val.width
-        @parentSize.width = val.width
+      if @size.width < val.width
+        @size.width = val.width
     "minSize.height": (val) ->
-      if @parentSize.height < val.height
-        @parentSize.height = val.height
+      if @size.height < val.height
+        @size.height = val.height
     "maxSize.width": (val) ->
-      if @parentSize.width > val.width
-        @parentSize.width = val.width
+      if @size.width > val.width
+        @size.width = val.width
     "maxSize.height": (val) ->
-      if @parentSize.height > val.height
-        @parentSize.height = val.height
-    "corner": "setCorner"
-    "size": "setSize"
+      if @size.height > val.height
+        @size.height = val.height
     "keepRatio": (val) ->
       @setRatio() if @val
 </script>

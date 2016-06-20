@@ -1,18 +1,16 @@
 // out: ..
-<template lang="jade">
+<template lang="pug">
 .resize-handle(
   v-bind:style="style"
-  @mousedown="dragStart | notPrevented | prevent"
-  @dblclick="resetSize | notPrevented | prevent"
+  style="position: absolute"
+  @mousedown="dragStart"
+  @dblclick="resetSize"
   v-bind:class="'resize-handle-'+side"
   )
 </template>
 
 <script lang="coffee">
 module.exports =
-  filters:
-    "notPrevented": require("vue-filters/notPrevented")
-    "prevent": require("vue-filters/prevent")
 
   mixins:[
     require("vue-mixins/onDocument")
@@ -24,7 +22,7 @@ module.exports =
     "offset":
       type: Number
       default: 0
-    "size":
+    "extent":
       type: Number
       default: 10
     "minSize":
@@ -39,57 +37,65 @@ module.exports =
     "side":
       type: String
       default: "right"
-    "parentSize":
+    "size":
       type: Number
       required: true
 
-
-  data: ->
-    startPos: 0
-    startSize: 0
-    removeMoveListener: null
-    removeEndListener: null
-    horizontal: true
-    plus: true
-    oldCursor: null
-
-    style:
-      position: "absolute"
-      width:null
-      height:null
-      top:null
-      left:null
-      right:null
-      bottom:null
-      cursor: "auto"
-
+  computed:
+    horizontal: ->
+      return @side == "left" or @side == "right"
+    plus: ->
+      return @side == "right" or @side == "bottom"
+    style: ->
+      if @horizontal
+        style =
+          width: @extent+"px"
+          height: "100%"
+          top: "0"
+          cursor: "ew-resize"
+      else
+        style =
+          width: "100%"
+          height: @extent+"px"
+          left: "0"
+          cursor: "ns-resize"
+      style[@side]= -@offset+"px"
+      return style
 
   methods:
-
     resetSize: (e) ->
-      if @defaultSize > -1
-        if @defaultSize < @minSize
-          @parentSize = @minSize
-        else if @defaultSize > @maxSize
-          @parentSize = @maxSize
-        else
-          @parentSize = @defaultSize
+      unless e.defaultPrevented
+        e.preventDefault()
+        if @defaultSize > -1
+          oldSize = @size
+          if @defaultSize < @minSize
+            @size = @minSize
+          else if @defaultSize > @maxSize
+            @size = @maxSize
+          else
+            @size = @defaultSize
+          @$emit "resize", @size, oldSize, @
+          @$emit "reset-size"
 
     dragStart: (e) ->
-      @startSize = @parentSize
-      if @horizontal
-        @startPos = e.clientX
-      else
-        @startPos = e.clientY
-      if document.body.style.cursor?
-        @oldCursor = document.body.style.cursor
-      else
-        @oldCursor = null
-      document.body.style.cursor = @style.cursor
-      @removeMoveListener = @onDocument("mousemove",@drag)
-      @removeEndListener = @onceDocument("mouseup",@dragEnd)
+      unless e.defaultPrevented
+        e.preventDefault()
+        @startSize = @size
+        if @horizontal
+          @startPos = e.clientX
+        else
+          @startPos = e.clientY
+        if document.body.style.cursor?
+          @oldCursor = document.body.style.cursor
+        else
+          @oldCursor = null
+        document.body.style.cursor = @style.cursor
+        @removeMoveListener = @onDocument("mousemove",@drag)
+        @removeEndListener = @onceDocument("mouseup",@dragEnd)
+        @$emit "resize-start", @size, @
 
     drag: (e) ->
+      e.preventDefault()
       if @horizontal
         pos = e.clientX
       else
@@ -102,46 +108,23 @@ module.exports =
         newSize = @minSize
       else if newSize > @maxSize
           newSize = @maxSize
-      @parentSize = newSize
-      e.preventDefault()
+      oldSize = @size
+      @size = newSize
+      @$emit "resize", @size, oldSize, @
 
     dragEnd: (e) ->
+      e.preventDefault()
       document.body.style.cursor = @oldCursor
       @removeMoveListener?()
       @removeEndListener?()
-      e.preventDefault()
+      @$emit "resize-end", @size, @
       true
-
-    setStyle: ->
-      @horizontal = @side == "left" or @side == "right"
-      @plus = @side == "right" or @side == "bottom"
-      @style.right = null
-      @style.bottom = null
-      if @horizontal
-        @style.width = @size+"px"
-        @style.height = "100%"
-        @style.top = "0"
-        @style.left = null
-        @style.cursor = "ew-resize"
-      else
-        @style.width = "100%"
-        @style.height = @size+"px"
-        @style.top = null
-        @style.left = "0"
-        @style.cursor = "ns-resize"
-      @style[@side]= -@offset+"px"
-
-
-  compiled: -> @setStyle()
-
 
   watch:
     "minSize": (val) ->
-      if @parentSize < val
-        @parentSize = val
+      if @size < val
+        @size = val
     "maxSize": (val) ->
-      if @parentSize > val
-        @parentSize = val
-    "side": "setStyle"
-    "size": "setStyle"
+      if @size > val
+        @size = val
 </script>
